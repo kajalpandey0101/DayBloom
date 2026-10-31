@@ -1,0 +1,9 @@
+
+{
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "https://daybloom-ovyp.onrender.com/api/$1"
+    }
+  ]
+}
