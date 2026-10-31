@@ -1,4 +1,5 @@
 # DayBloom
+<<<<<<< HEAD
 
 DayBloom is a private, responsive habit and streak tracker. The React + TypeScript client has separate Daily Check-in and My Streaks routes; Django REST Framework owns saved answers, history, and streak calculations. PostgreSQL is the application database.
 
@@ -121,3 +122,6 @@ Every save must include exactly one valid answer for every currently active acti
 - **The initial activities are missing:** run `python manage.py migrate` in `backend`; inspect migration status with `python manage.py showmigrations tracker`.
 - **A date appears one day off:** confirm the `DJANGO_TIME_ZONE` value in `.env`, restart Django after changing it, then reload the page. Stored records are date-only values and are not shifted by UTC conversion.
 - **A check-in cannot be saved:** all currently active activities need an explicit Yes, No, or Skip. The API returns validation errors in the page rather than treating unanswered questions as No.
+=======
+Personal productivity and streak tracking application
+>>>>>>> 0aa09e08a3f3840f919b59ea3dc081ff61a73985
