@@ -8,11 +8,11 @@ afterEach(() => {
 
 describe("api", () => {
   it("reports HTML login responses as API routing errors instead of JSON parse errors", async () => {
-    document.cookie = "csrftoken=test-token; path=/";
+    document.cookie = "csrftoken=cookie-token; path=/";
     const fetchMock = vi
       .fn()
       .mockResolvedValueOnce(
-        new Response(JSON.stringify({ csrfToken: "test-token" }), {
+        new Response(JSON.stringify({ csrfToken: "fetched-json-token" }), {
           status: 200,
           headers: { "Content-Type": "application/json" },
         }),
@@ -45,6 +45,8 @@ describe("api", () => {
       expect.stringContaining("/auth/login/"),
       expect.objectContaining({ method: "POST", credentials: "include" }),
     );
+    const loginRequest = fetchMock.mock.calls[1][1] as RequestInit;
+    expect(new Headers(loginRequest.headers).get("X-CSRFToken")).toBe("fetched-json-token");
   });
 
   it("preserves JSON API error messages", async () => {

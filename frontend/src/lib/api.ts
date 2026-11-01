@@ -10,15 +10,6 @@ export class ApiError extends Error {
   }
 }
 
-function readCookie(name: string): string | undefined {
-  return document.cookie
-    .split("; ")
-    .find((cookie) => cookie.startsWith(`${name}=`))
-    ?.split("=")
-    .slice(1)
-    .join("=");
-}
-
 function isJsonResponse(response: Response): boolean {
   return /(^|\/|\+)json(?:;|$)/i.test(response.headers.get("Content-Type") ?? "");
 }
@@ -42,12 +33,17 @@ async function csrfToken(): Promise<string> {
   if (!response.ok) {
     throw new ApiError(`Could not load the security token (HTTP ${response.status}).`, response.status);
   }
-  await readJson(response);
-  const token = readCookie("csrftoken");
-  if (!token) {
-    throw new Error("The security token could not be loaded. Please refresh and try again.");
+  const payload = await readJson(response);
+  if (
+    !payload ||
+    typeof payload !== "object" ||
+    !("csrfToken" in payload) ||
+    typeof payload.csrfToken !== "string" ||
+    !payload.csrfToken
+  ) {
+    throw new Error("The security token response was invalid. Please refresh and try again.");
   }
-  return decodeURIComponent(token);
+  return payload.csrfToken;
 }
 
 function errorMessage(payload: unknown): string {
