@@ -1,4 +1,5 @@
 import os
+from urllib.parse import urlparse, unquote
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -57,14 +58,18 @@ TEMPLATES = [
 WSGI_APPLICATION = "config.wsgi.application"
 ASGI_APPLICATION = "config.asgi.application"
 
+DATABASE_URL = os.getenv("DATABASE_URL")
+
+url = urlparse("postgresql://neondb_owner:npg_U9TxARmuD4fz@ep-fragrant-recipe-a1q4l8vr-pooler.ap-southeast-1.aws.neon.tech/neondb")
+
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.getenv("POSTGRES_DB", "daybloom"),
-        "USER": os.getenv("POSTGRES_USER", "daybloom"),
-        "PASSWORD": os.getenv("POSTGRES_PASSWORD", "change-this-local-password"),
-        "HOST": os.getenv("POSTGRES_HOST", "localhost"),
-        "PORT": os.getenv("POSTGRES_PORT", "5432"),
+        "NAME": url.path.lstrip("/"),
+        "USER": unquote(url.username or ""),
+        "PASSWORD": unquote(url.password or ""),
+        "HOST": url.hostname,
+        "PORT": url.port or "5432",
         "CONN_MAX_AGE": 60,
     }
 }
